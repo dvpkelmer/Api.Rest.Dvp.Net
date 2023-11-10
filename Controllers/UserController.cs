@@ -37,7 +37,7 @@ public class UserController : ControllerBase
                 result = _users
             };
     }
-
+    
     [HttpPost]
     [Route("create")]
     public dynamic Create([FromBody] User _user)
@@ -55,6 +55,7 @@ public class UserController : ControllerBase
         }
         else
         {
+            _user.CreatedAt = DateTime.Today;
             _DBContext.Users.Add(_user);
             _DBContext.SaveChanges();
             return new

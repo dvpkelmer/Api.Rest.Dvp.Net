@@ -17,28 +17,45 @@ public class PersonController : ControllerBase
 
     [HttpGet]
     [Route("getAll")]
-    public IActionResult GetAll()
+    public dynamic GetAll()
     {
         var persons = _DBContext.Persons.ToList();
 
-        return Ok(persons);
+       return new
+            {
+                success = true,
+                message = "successful listing",
+                result = persons
+            };
     }
 
     [HttpPost]
     [Route("create")]
-    public IActionResult Create([FromBody] Person _person)
+    public dynamic Create([FromBody] Person _person)
     {
         var person = _DBContext.Persons.FirstOrDefault(o => o.IdentificationNumber == _person.IdentificationNumber);
 
         if (person != null)
         {
-            return Ok(person);
+            return new
+            {
+                success = false,
+                message = "Person already exists",
+                result = ""
+            };
         }
         else
         {
+             _person.CreatedAt = DateTime.Today;
             _DBContext.Persons.Add(_person);
             _DBContext.SaveChanges();
-            return Ok(true);
+            
+             return new
+            {
+                success = true,
+                message = "Person created successfully",
+                result = _person
+            };
         }
 
     }
